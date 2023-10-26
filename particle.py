@@ -19,6 +19,12 @@ class Particle:
     def CheckCollision(self, p):
         return self.Dist(p) <= self.radius + p.radius
 
+    def EdgesCollisions(self, xmax: float, ymax: float):
+        if self.coords[0] <= self.radius or self.coords[0] + self.radius >= xmax:
+            self.velocity[0] *= -1.0
+        if self.coords[1] <= self.radius or self.coords[1] + self.radius >= ymax:
+            self.velocity[1] *= -1.0
+
     # Projection of velocity vector onto vector x
     def ProjectVelocityOn(self, x: np.ndarray) -> np.ndarray:
         return (np.dot(self.velocity, x) / np.dot(x, x)) * x

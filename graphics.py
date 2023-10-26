@@ -48,13 +48,10 @@ class DrawableParticle(Particle):
         self.colour = Red if colour is None else colour
         self.visible_radius = radius if visible_radius is None else visible_radius
 
-    def Draw(self, coeff: float):
-        pygame.draw.circle(Window,
-                           self.colour, 
-                          (float(self.coords[0]) / coeff,
-                           float(self.coords[1]) / coeff), 
+    def Draw(self, scale_coeff: float, metric_coeff: float):
+        pygame.draw.circle(Window, # TODO
+                           self.colour,
+                          (float(self.coords[0]) / scale_coeff,
+                           float(self.coords[1]) / scale_coeff),
                            self.visible_radius)
-
-    def EdgesCollisions(self):
-        pass
 
