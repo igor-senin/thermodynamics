@@ -16,11 +16,27 @@ def do_main_cycle(particles: List[graphics.DrawableParticle],
     clock = pygame.time.Clock()
     run = True
 
-    main_system = System(particles, xmax, ymax)
+    main_system = System(particles, xmax, ymax, lattice_dimension=13)
+
+    colors = [(255, 0, 0),
+              (255, 153, 51),
+              (255, 255, 51),
+              (153, 255, 51),
+              (51, 255, 51),
+              (255, 0, 127),
+              (204, 0, 204),
+              (0, 0, 255),
+              (0, 0, 0)]
 
     while run:
         clock.tick(60)
         graphics.draw_surface()
+        for blocks_list in main_system.lattice.blocks:
+            for block in blocks_list:
+                graphics.draw_line(block.x_lower[0], block.x_lower[1],
+                                   block.x_higher[0], block.x_higher[1],
+                                   scale_coeff)
+
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -34,7 +50,10 @@ def do_main_cycle(particles: List[graphics.DrawableParticle],
         main_system.RecalculateSystem()
 
         for b in main_system.GetParticles():
-            b.Draw(scale_coeff, metric_coeff)
+            color_id = main_system.lattice.GetBlockID(b.coords[0], b.coords[1])
+            color_id %= len(colors)
+            color = colors[color_id]
+            b.Draw(scale_coeff, metric_coeff, color)
 
         graphics.display_update()
 
@@ -47,14 +66,16 @@ def main_cycle():
     # 400 * 225 particles on window
     scale_coeff = 0.2083333 # for Width = 1920
     metric_coeff = 10**10 # = 1 / hydgrogenium diameter
-    N = 100 # total number of particles
+    N = 1000 # total number of particles
     xmax = 400.0 # * 10**-10 metres
     ymax = 225.0 # * 10**-10 metres
     vmax = 1e1 # * 10**-10 metres per second
-    xs  = np.random.uniform(15.0, xmax - 15.0, N)
-    ys  = np.random.uniform(15.0, ymax - 15.0, N)
-    vxs = np.random.uniform(-vmax, vmax, N)
-    vys = np.random.uniform(-vmax, vmax, N)
+
+    dimension = 2
+
+    x  = np.random.uniform(15.0, xmax - 15.0, N * dimension).reshape(N, dimension)
+    # TODO may be normal, not uniform
+    vx = np.random.uniform(-vmax, vmax, N * dimension).reshape(N, dimension)
 
     mass = 1.6735575e-27 # kg
     radius = 1.0 # * 10**-10 metres
@@ -62,10 +83,8 @@ def main_cycle():
     particles = []
     for i in range(N):
         particles.append(DrawableParticle(
-            x=xs[i],
-            y=ys[i],
-            vx=vxs[i],
-            vy=vxs[i],
+            x=x[i],
+            vx=vx[i],
             mass=mass,
             radius=radius,
             visible_radius=30,

@@ -2,9 +2,9 @@ import numpy as np
 
 
 class Particle:
-    def __init__(self, x, y, vx, vy, mass, radius):
-        self.coords = np.array([x, y])
-        self.velocity = np.array([vx, vy])
+    def __init__(self, x, vx, mass, radius):
+        self.coords = x
+        self.velocity = vx
         self.mass = mass
         self.radius = radius
 

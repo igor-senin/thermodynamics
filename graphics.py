@@ -1,5 +1,6 @@
 from particle import Particle
 from system import System
+import graphics
 
 import pygame
 
@@ -27,6 +28,16 @@ def init():
 def display_update():
     pygame.display.update()
 
+def draw_line(x1, y1, x2, y2, scale_coeff):
+    x1 = x1 / scale_coeff
+    x2 = x2 / scale_coeff
+    y1 = y1 / scale_coeff
+    y2 = y2 / scale_coeff
+    pygame.draw.line(Window, graphics.Black, [x1, y1], [x1, y2], 3)
+    pygame.draw.line(Window, graphics.Black, [x2, y1], [x2, y2], 3)
+    pygame.draw.line(Window, graphics.Black, [x1, y1], [x2, y1], 3)
+    pygame.draw.line(Window, graphics.Black, [x1, y2], [x2, y2], 3)
+
 def draw_surface():
     Window.fill(White)
     Window.blit(Surface, (0,0))
@@ -37,20 +48,18 @@ def draw_surface():
 class DrawableParticle(Particle):
     def __init__(self,
                  x,
-                 y,
                  vx,
-                 vy,
                  mass,
                  radius,
                  colour=None,
                  visible_radius=None):
-        super(DrawableParticle, self).__init__(x, y, vx, vy, mass, radius)
+        super(DrawableParticle, self).__init__(x, vx, mass, radius)
         self.colour = Red if colour is None else colour
         self.visible_radius = radius if visible_radius is None else visible_radius
 
-    def Draw(self, scale_coeff: float, metric_coeff: float):
+    def Draw(self, scale_coeff: float, metric_coeff: float, color=None):
         pygame.draw.circle(Window, # TODO
-                           self.colour,
+                           self.colour if color is None else color,
                           (float(self.coords[0]) / scale_coeff,
                            float(self.coords[1]) / scale_coeff),
                            self.visible_radius)
