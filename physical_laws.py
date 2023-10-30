@@ -1,9 +1,11 @@
 import numpy as np
+from numba import njit
 
 from particle import Particle
 
 
 class PhysicalLaws:
+
     @staticmethod
     def Collision(p1: Particle, p2: Particle):
         if not p1.CheckCollision(p2):
