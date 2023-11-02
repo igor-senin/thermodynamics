@@ -12,6 +12,7 @@ Black = (0, 0, 0)
 Red   = (255, 0, 0)
 Green = (0, 200, 0)
 Yellow= (255, 255, 0)
+Grey  = (192, 192, 192)
 
 def init():
     pygame.init()
@@ -39,7 +40,9 @@ def draw_line(x1, y1, x2, y2, scale_coeff):
     pygame.draw.line(Window, graphics.Black, [x1, y2], [x2, y2], 3)
 
 def draw_surface():
-    Window.fill(White)
+    Window.fill(Grey)
+    x = (Width - Height) / 2
+    pygame.draw.rect(Surface, White, pygame.Rect(x, 0, Height, Height))
     Window.blit(Surface, (0,0))
 
 """
@@ -48,12 +51,14 @@ def draw_surface():
 class DrawableParticle(Particle):
     def __init__(self,
                  x,
+                 y,
                  vx,
+                 vy,
                  mass,
                  radius,
                  colour=None,
                  visible_radius=None):
-        super(DrawableParticle, self).__init__(x, vx, mass, radius)
+        super(DrawableParticle, self).__init__(x, y, vx, vy, mass, radius)
         self.colour = Red if colour is None else colour
         self.visible_radius = radius if visible_radius is None else visible_radius
 

@@ -11,13 +11,15 @@ from typing import List
 def do_main_cycle(particles: List[graphics.DrawableParticle],
                   scale_coeff=1.0,
                   metric_coeff=1.0,
+                  xmin=0.0,
                   xmax=100.0,
+                  ymin=0.0,
                   ymax=100.0, 
-                  lattice_dimension=2000):
+                  lattice_dimension=50):
     clock = pygame.time.Clock()
     run = True
 
-    main_system = System(particles, xmax, ymax, lattice_dimension)
+    main_system = System(particles, xmin, xmax, ymin, ymax, lattice_dimension)
 
     colors = [(255, 0, 0),
               (255, 153, 51),
@@ -67,28 +69,36 @@ def main_cycle():
     # 400 * 225 particles on window
     scale_coeff = 0.2083333 # for Width = 1920
     metric_coeff = 10**10 # = 1 / hydgrogenium diameter
-    N = 10000 # total number of particles
-    xmax = 400.0 # * 10**-10 metres
+    N = 1000 # total number of particles
+    ymin = 0.0
     ymax = 225.0 # * 10**-10 metres
+
+    x_total = 400.0
+    xmin = (x_total - ymax) / 2.0 # * 10**-10 metres
+    xmax = (x_total + ymax) / 2.0 # * 10**-10 metres
+
+    dr = 15.0 # shift from walls
+    
     vmax = 1e1 # * 10**-10 metres per second
 
-    dimension = 2
-
-    x  = np.random.uniform(15.0, xmax - 15.0, N * dimension).reshape(N, dimension)
-    # TODO may be normal, not uniform
-    vx = np.random.uniform(-vmax, vmax, N * dimension).reshape(N, dimension)
+    xs  = np.random.uniform(xmin + dr, xmax - dr, N)
+    ys  = np.random.uniform(ymin + dr, ymax - dr, N)
+    vxs = np.random.uniform(-vmax, vmax, N)
+    vys = np.random.uniform(-vmax, vmax, N)
 
     mass = 1.6735575e-27 # kg
-    radius = 1.0 # * 10**-10 metres
+    radius = 2.0 # * 10**-10 metres
 
     particles = []
     for i in range(N):
         particles.append(DrawableParticle(
-            x=x[i],
-            vx=vx[i],
+            x=xs[i],
+            y=ys[i],
+            vx=vxs[i],
+            vy=vys[i],
             mass=mass,
             radius=radius,
-            visible_radius=5,
+            visible_radius=10,
             colour=graphics.Red))
-    do_main_cycle(particles, scale_coeff, metric_coeff, xmax, ymax)
+    do_main_cycle(particles, scale_coeff, metric_coeff, xmin, xmax, ymin, ymax)
 

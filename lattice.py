@@ -10,8 +10,10 @@ class Block:
         pass
 
 class Lattice:
-    def __init__(self, xmax, ymax, lattince_dimension, particles):
+    def __init__(self, xmin, xmax, ymin, ymax, lattince_dimension, particles):
+        self.xmin = xmin
         self.xmax = xmax
+        self.ymin = ymin
         self.ymax = ymax
         self.lattince_dimension = lattince_dimension
         self.particles = particles
@@ -21,10 +23,10 @@ class Lattice:
         self.blocks = [[] for i in range(lattince_dimension)]
         for i in range(lattince_dimension):
             for j in range(lattince_dimension):
-                x_min = i / lattince_dimension * xmax
-                y_min = j / lattince_dimension * ymax
-                x_max = (i+1) /lattince_dimension * xmax
-                y_max = (j+1) /lattince_dimension * ymax
+                x_min = xmin + i / lattince_dimension * (xmax - xmin)
+                y_min = ymin + j / lattince_dimension * (ymax - ymin)
+                x_max = xmin + (i+1) / lattince_dimension * (xmax - xmin)
+                y_max = ymin + (j+1) / lattince_dimension * (ymax - ymin)
                 self.blocks[i].append(Block([x_min, y_min], [x_max, y_max]))
 
         for i, p in enumerate(particles):
@@ -35,14 +37,14 @@ class Lattice:
 
     # get index of block which contains coordinates [x, y]
     def GetBlockIndex(self, x, y):
-        x_index = int((x / self.xmax)  * self.lattince_dimension)
+        x_index = int((x / (self.xmax - self.xmin)) * self.lattince_dimension)
 
         if x_index < 0:
             x_index = 0
         if x_index > self.lattince_dimension - 1:
             x_index = self.lattince_dimension - 1
 
-        y_index = int((y / self.ymax)  * self.lattince_dimension)
+        y_index = int((y / (self.ymax - self.ymin)) * self.lattince_dimension)
         if y_index < 0:
             y_index = 0
         if y_index > self.lattince_dimension - 1:
@@ -75,7 +77,7 @@ class Lattice:
 
 
     def GetBlockLen(self):
-        return self.xmax / self.lattince_dimension
+        return (self.xmax - self.xmin) / self.lattince_dimension
 
     # get block unique identifier by point in this block
     def GetBlockID(self, x, y):
