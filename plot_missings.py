@@ -6,8 +6,6 @@ import numpy as np
 import matplotlib.animation as animation
 
 
-def init_csv():
-
 
 def data_gen():
     for cnt in itertools.count():
