@@ -67,7 +67,7 @@ def main_cycle():
     graphics.init()
     # 1 pixel <---> (scale_coeff / metric_coeff) metres
     # 400 * 225 particles on window
-    scale_coeff = 0.2083333 # for Width = 1920
+    scale_coeff = 400.0 / graphics.Width
     metric_coeff = 10**10 # = 1 / hydgrogenium diameter
     N = 1000 # total number of particles
     ymin = 0.0
