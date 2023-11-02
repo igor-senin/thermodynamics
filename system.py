@@ -8,9 +8,14 @@ from numba import njit
 
 
 class System:
-    def __init__(self, particles: List[Particle], xmax: float, ymax: float, lattice_dimension : int):
+    def __init__(self, particles: List[Particle],
+                 xmin: float, xmax: float,
+                 ymin: float, ymax: float,
+                 lattice_dimension : int):
         self.particles = particles # no copy
+        self.xmin = xmin
         self.xmax = xmax
+        self.ymin = ymin
         self.ymax = ymax
 
         # lattice example for dimension 2
@@ -19,7 +24,7 @@ class System:
         # |-|-|
         # | | |
         # -----
-        self.lattice = Lattice(xmax, ymax, lattice_dimension, self.particles)
+        self.lattice = Lattice(xmin, xmax, ymin, ymax, lattice_dimension, self.particles)
         self.current_collision = 0
         self.true_collision = 0
         print("xmax ", self.lattice.xmax)
@@ -36,14 +41,14 @@ class System:
         size = len(self.particles)
         true_ball_colision = 0
 
-        for i in range(size):
-            for j in range(i + 1, size):
-                true_ball_colision += 1 if self.particles[i].CheckCollision(self.particles[j])else 0
+        #for i in range(size):
+        #    for j in range(i + 1, size):
+        #        true_ball_colision += 1 if self.particles[i].CheckCollision(self.particles[j])else 0
 
         current_ball_colision = 0
 
         for i in range(size):
-            self.particles[i].EdgesCollisions(self.xmax, self.ymax)
+            self.particles[i].EdgesCollisions(self.xmin, self.xmax, self.ymin, self.ymax)
             self.lattice.RecalculateParticle(i)
 
             # here and below it is written that we recalculate collision only in particle block
@@ -67,8 +72,8 @@ class System:
             visitors_lower = self.lattice.GetVisitorsByParticleCoordinates(self.particles[i].coords[0] + border_len, 
                                                                            self.particles[i].coords[1])
 
-            visitors_diag= self.lattice.GetVisitorsByParticleCoordinates(self.particles[i].coords[0] + border_len, 
-                                                                           self.particles[i].coords[1] + border_len)
+            visitors_diag = self.lattice.GetVisitorsByParticleCoordinates(self.particles[i].coords[0] + border_len, 
+                                                                          self.particles[i].coords[1] + border_len)
 
             start_index = 0
 

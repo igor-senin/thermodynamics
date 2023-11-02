@@ -3,16 +3,13 @@ from numba import njit
 from numba.experimental import jitclass
 
 class Particle:
-    def __init__(self, x, vx, mass, radius):
-        self.coords = x
-        self.velocity = vx
+    def __init__(self, x, y, vx, vy, mass, radius):
+        self.coords = np.array([x, y])
+        self.velocity = np.array([vx, vy])
         self.mass = mass
         self.radius = radius
 
         # TODO: длина свободного пробега
-        '''
-            У частицы есть внутренний таймер, в течени
-        '''
 
     def Dist(self, p):
         return np.linalg.norm(self.coords - p.coords)
@@ -20,25 +17,25 @@ class Particle:
     def CheckCollision(self, p):
         return self.Dist(p) <= self.radius + p.radius
 
-    def EdgesCollisions(self, xmax: float, ymax: float):
-        if self.coords[0] <= self.radius or self.coords[0] + self.radius >= xmax:
+    def EdgesCollisions(self, xmin: float, xmax: float, ymin: float, ymax: float):
+        if self.coords[0] <= self.radius + xmin or self.coords[0] + self.radius >= xmax:
             self.velocity[0] *= -1.0
 
-        if self.coords[1] <= self.radius or self.coords[1] + self.radius >= ymax:
+        if self.coords[1] <= self.radius + ymin or self.coords[1] + self.radius >= ymax:
             self.velocity[1] *= -1.0
 
-        # fix effect when boll changing velocity very fast
+        # fix effect when ball changing velocity very fast
         # after this need recalculate lattice
         eps = 0.000001
-        if self.coords[0] <= self.radius:
-            self.coords[0] = self.radius + eps
+        if self.coords[0] <= self.radius + xmin:
+            self.coords[0] = self.radius + xmin + eps
 
         if self.coords[0] + self.radius >= xmax:
             self.coords[0] = xmax - self.radius - eps
 
 
-        if self.coords[1] <= self.radius:
-            self.coords[1] = self.radius + eps
+        if self.coords[1] <= self.radius + ymin:
+            self.coords[1] = self.radius + ymin + eps
 
         if self.coords[1] + self.radius > ymax:
             self.coords[1] = ymax - self.radius - eps
