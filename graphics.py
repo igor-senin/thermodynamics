@@ -18,7 +18,7 @@ def init():
 
     global Width, Height, Window
     Width, Height = pygame.display.Info().current_w, pygame.display.Info().current_h
-    Window = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+    Window = pygame.display.set_mode((1000, 1000))#, pygame.FULLSCREEN)
     
     global Surface
     Surface = pygame.Surface((Width, Height), pygame.SRCALPHA)

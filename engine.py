@@ -2,18 +2,19 @@ import graphics
 from graphics import DrawableParticle
 from system import System
 
+from plot_missings import main_plot
+
 import numpy as np
 import pygame
 
 from typing import List
-
 
 def do_main_cycle(particles: List[graphics.DrawableParticle],
                   scale_coeff=1.0,
                   metric_coeff=1.0,
                   xmax=100.0,
                   ymax=100.0, 
-                  lattice_dimension=2000):
+                  lattice_dimension=100):
     clock = pygame.time.Clock()
     run = True
 
@@ -49,6 +50,9 @@ def do_main_cycle(particles: List[graphics.DrawableParticle],
             #  TODO
 
         main_system.RecalculateSystem()
+        global collision
+        collision = main_system.GetBallCollisionValues()
+        
 
         for b in main_system.GetParticles():
             #color_id = main_system.lattice.GetBlockID(b.coords[0], b.coords[1])
@@ -67,7 +71,7 @@ def main_cycle():
     # 400 * 225 particles on window
     scale_coeff = 0.2083333 # for Width = 1920
     metric_coeff = 10**10 # = 1 / hydgrogenium diameter
-    N = 10000 # total number of particles
+    N = 10 # total number of particles
     xmax = 400.0 # * 10**-10 metres
     ymax = 225.0 # * 10**-10 metres
     vmax = 1e1 # * 10**-10 metres per second
@@ -88,7 +92,7 @@ def main_cycle():
             vx=vx[i],
             mass=mass,
             radius=radius,
-            visible_radius=5,
+            visible_radius=7,
             colour=graphics.Red))
     do_main_cycle(particles, scale_coeff, metric_coeff, xmax, ymax)
 
