@@ -12,6 +12,7 @@ if __name__ == '__main__':
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.bind(("localhost", 12314))
     s.listen(1)
+    print("Server started")
 
     clientsocket, address = s.accept()
     print("Connection from {} has been established. Descriptor".format(address))
@@ -21,7 +22,7 @@ if __name__ == '__main__':
     xmin, ymin, xmax, ymax = [recv_double(clientsocket) for i in range(4)]
     print(xmin, ymin, xmax, ymax)
 
-    particles_size = 100
+    particles_size = 2000
     main_cycle_init(xmin, ymin, xmax, ymax, particles_size)
     
     send_int(clientsocket, particles_size)

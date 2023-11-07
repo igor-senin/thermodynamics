@@ -28,7 +28,7 @@ def main_cycle_init(xmin: float, ymin: float, xmax: float, ymax: float, N:int):
             mass=mass,
             radius=radius))
 
-    lattice_dimension = 10
+    lattice_dimension = 100
 
     global main_system 
     main_system = System(particles, xmin, xmax, ymin, ymax, lattice_dimension)

@@ -6,6 +6,7 @@ class Particle:
         self.velocity = np.array([vx, vy])
         self.mass = mass
         self.radius = radius
+        self.past_collision = None
 
         # TODO: длина свободного пробега
 

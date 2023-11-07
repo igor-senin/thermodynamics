@@ -15,7 +15,7 @@ def send_bounds(socket):
 
 if __name__ == "__main__":
     sender_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sender_socket.connect((socket.gethostname(), 12314))
+    sender_socket.connect(("localhost", 12314))
 
     graphics.init()
     
