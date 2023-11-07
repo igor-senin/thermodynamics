@@ -1,6 +1,4 @@
 import numpy as np
-from numba import njit
-from numba.experimental import jitclass
 
 class Particle:
     def __init__(self, x, y, vx, vy, mass, radius):

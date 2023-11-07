@@ -10,7 +10,7 @@ from sockets_interacts import send_double, send_int, recv_double
 
 if __name__ == '__main__':
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.bind((socket.gethostname(), 12314))
+    s.bind(("localhost", 12314))
     s.listen(1)
 
     clientsocket, address = s.accept()

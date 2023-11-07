@@ -68,13 +68,15 @@ class DrawableParticle():
         self.visible_radius = 10.0 if visible_radius is None else visible_radius
 
     def Draw(self, scale_coeff: float, metric_coeff: float, color=None):
-        #v = np.linalg.norm(self.velocity)
-        #v = v / 10.0
+        v = np.linalg.norm([self.vx, self.vy])
+        v *= 20
+        print(v)
+        int_v = min(int(v), 255)
+        v_color = (255, 255 - int_v, 0)
 
-        #speed_colour = (min(255, int(v * Blue[0] + (1 - v) * Red[0])), min(255, int(v * Blue[1] + (1 - v) * Red[1])), min(255, int(v * Blue[2] + (1 - v) * Red[2])))
-        pygame.draw.circle(Window, # TODO
-                           #speed_colour,
-                           self.colour if color is None else color,
+        pygame.draw.circle(Window,
+                           v_color,
+                           #self.colour if color is None else color,
                           (float(self.x) / scale_coeff,
                            float(self.y) / scale_coeff),
                            self.visible_radius)

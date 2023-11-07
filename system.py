@@ -4,8 +4,6 @@ from physical_laws import PhysicalLaws
 from lattice import Lattice
 
 from typing import List
-from numba import njit
-
 
 class System:
     def __init__(self, particles: List[Particle],

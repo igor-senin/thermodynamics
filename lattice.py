@@ -1,6 +1,4 @@
 import numpy as np
-from numba import njit
-from numba.experimental import jitclass
 
 class Block:
     def __init__(self, x_lower, x_higher):
