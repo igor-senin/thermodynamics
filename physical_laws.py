@@ -1,4 +1,5 @@
 import numpy as np
+from copy import deepcopy
 
 from particle import Particle
 
@@ -9,6 +10,11 @@ class PhysicalLaws:
     def Collision(p1: Particle, p2: Particle):
         if not p1.CheckCollision(p2):
             return
+
+        p1c = deepcopy(p1.coords)
+        p2c = deepcopy(p2.coords)
+        p1v = deepcopy(p1.velocity)
+        p2v = deepcopy(p2.velocity)
 
         x_axis = p2.coords - p1.coords
         x_axis = x_axis / np.linalg.norm(x_axis)
@@ -28,4 +34,9 @@ class PhysicalLaws:
 
         p1.velocity = v1x_new * x_axis + v1y
         p2.velocity = v2x_new * x_axis + v2y
-
+    
+        # fix balls sticking together
+        while p1.CheckCollision(p2):
+            p1.coords += p1.velocity * 0.1
+            p2.coords += p2.velocity * 0.1
+ 

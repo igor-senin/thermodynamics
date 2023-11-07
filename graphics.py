@@ -70,7 +70,6 @@ class DrawableParticle():
     def Draw(self, scale_coeff: float, metric_coeff: float, color=None):
         v = np.linalg.norm([self.vx, self.vy])
         v *= 20
-        print(v)
         int_v = min(int(v), 255)
         v_color = (255, 255 - int_v, 0)
 
