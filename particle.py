@@ -17,11 +17,16 @@ class Particle:
         return self.Dist(p) <= self.radius + p.radius
 
     def EdgesCollisions(self, xmin: float, xmax: float, ymin: float, ymax: float):
+
+        has_collision = False
+
         if self.coords[0] <= self.radius + xmin or self.coords[0] + self.radius >= xmax:
             self.velocity[0] *= -1.0
+            has_collision = True
 
         if self.coords[1] <= self.radius + ymin or self.coords[1] + self.radius >= ymax:
             self.velocity[1] *= -1.0
+            has_collision = True
 
         # fix effect when ball changing velocity very fast
         # after this need recalculate lattice
@@ -38,6 +43,8 @@ class Particle:
 
         if self.coords[1] + self.radius > ymax:
             self.coords[1] = ymax - self.radius - eps
+
+        return has_collision
 
     # Projection of velocity vector onto vector x
     def ProjectVelocityOn(self, x: np.ndarray) -> np.ndarray:

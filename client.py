@@ -31,6 +31,8 @@ if __name__ == "__main__":
     clock = pygame.time.Clock()
     run = True
 
+    reduse_draw_statistics = 0
+    statistics = []
     while run:
         clock.tick(60)
         graphics.draw_surface()
@@ -43,6 +45,7 @@ if __name__ == "__main__":
             particles[i].y = coord_y
             particles[i].vx = vel_x
             particles[i].vy = vel_y
+
         
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -56,6 +59,20 @@ if __name__ == "__main__":
 
         for p in particles:
             p.Draw(scale_coeff, metric_coeff)
+
+        reduse_draw_statistics += 1 
+        if reduse_draw_statistics % 20 == 0:
+            statistics.clear()
+            statistics.append(["Max velocity", recv_double(sender_socket)])
+            statistics.append(["Min velocity", recv_double(sender_socket)])
+            statistics.append(["Mean velocity", recv_double(sender_socket)])
+            statistics.append(["Hits on the walls", recv_double(sender_socket)])
+        else:
+            for i in range(4):
+                recv_double(sender_socket)
+
+
+        graphics.draw_statistics(statistics)
 
         graphics.display_update()
 

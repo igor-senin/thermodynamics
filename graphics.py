@@ -28,6 +28,7 @@ def init():
 
     pygame.display.set_caption("Thermodynamics")
 
+
 def get_box_bounds():
     ymin = 0.0
     ymax = (graphics.Height / graphics.Width) * 400.0 # * 10**-10 metres
@@ -38,6 +39,17 @@ def get_box_bounds():
 
 def display_update():
     pygame.display.update()
+
+def draw_statistics(statistics):
+    font_size = 17
+    font = pygame.font.Font('freesansbold.ttf', font_size)
+    stats = []
+    y_offset = 0
+    for s_name, s_val in statistics:
+        stats.append(font.render((s_name + " {}".format(s_val))[:27], False, graphics.Black, graphics.White))
+        Window.blit(stats[-1], (0, y_offset))
+        y_offset += font_size
+
 
 def draw_squeare(x1, y1, x2, y2, scale_coeff):
     x1 = x1 / scale_coeff

@@ -37,5 +37,5 @@ def main_cycle_init(xmin: float, ymin: float, xmax: float, ymax: float, N:int):
 def cycle_iteration():
 
     main_system.RecalculateSystem()
-    return main_system.GetParticles()
+    return [main_system.GetParticles(), main_system.GetStatistics()]
 

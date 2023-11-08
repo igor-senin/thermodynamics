@@ -1,3 +1,5 @@
+import numpy as np
+from sys import float_info
 from particle import Particle
 from physical_laws import PhysicalLaws
 
@@ -23,9 +25,10 @@ class System:
         # | | |
         # -----
         self.lattice = Lattice(xmin, xmax, ymin, ymax, lattice_dimension, self.particles)
-        self.current_collision = 0
-        self.true_collision = 0
-        print("xmax ", self.lattice.xmax)
+        self.max_velocity = 0.0
+        self.min_velocity = float_info.max
+        self.mean_velocity = 0.0
+        self.hits_on_the_walls = 0.0
 
     def SetBallCollisionValues(self, current_collision, true_collision):
         self.current_collision = current_collision
@@ -37,8 +40,20 @@ class System:
 
     def RecalculateSystem(self):
         size = len(self.particles)
+        self.max_velocity = np.float64(float_info.min)
+        self.min_velocity = np.float64(float_info.max)
+        self.mean_velocity = np.float64(0.0)
+        self.hits_on_the_walls = np.float64(0.0) 
+        
         for i in range(size):
-            self.particles[i].EdgesCollisions(self.xmin, self.xmax, self.ymin, self.ymax)
+            velocity_norm = np.linalg.norm(self.particles[i].velocity)
+            self.max_velocity = np.max([self.max_velocity, velocity_norm])
+            self.min_velocity = np.min([self.min_velocity, velocity_norm])
+            self.mean_velocity += velocity_norm
+
+            has_collision = self.particles[i].EdgesCollisions(self.xmin, self.xmax, self.ymin, self.ymax)
+            self.hits_on_the_walls += 1.0 if has_collision else 0.0
+
             self.lattice.RecalculateParticle(i)
 
             # here and below it is written that we recalculate collision only in particle block
@@ -79,5 +94,16 @@ class System:
             self.particles[i].UpdatePosition()
             self.lattice.RecalculateParticle(i)
 
+        self.mean_velocity /= size
+
     def GetParticles(self):
         return self.particles
+
+    def GetStatistics(self):
+        print(self.max_velocity, self.min_velocity, self.mean_velocity, self.hits_on_the_walls)
+
+        return [self.max_velocity, 
+                self.min_velocity, 
+                self.mean_velocity,
+                self.hits_on_the_walls]
+
