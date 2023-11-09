@@ -26,7 +26,13 @@ if __name__ == "__main__":
     # send server particles size
     particles_size = recv_int(sender_socket)
 
+    scale_coeff = 400.0 / graphics.Width
+    metric_coeff = 10**10 # = 1 / hydgrogenium diameter
+
     particles = [graphics.DrawableParticle() for i in range(particles_size)]
+    xmin, xmax, ymin, ymax = get_box_bounds()
+    xlen = (xmax - xmin) / metric_coeff
+    ylen = (ymax - ymin) / metric_coeff
 
     clock = pygame.time.Clock()
     run = True
@@ -54,9 +60,6 @@ if __name__ == "__main__":
                 if event.key == pygame.K_ESCAPE:
                     run = False
 
-        scale_coeff = 400.0 / graphics.Width
-        metric_coeff = 10**10 # = 1 / hydgrogenium diameter
-
         for p in particles:
             p.Draw(scale_coeff, metric_coeff)
 
@@ -68,8 +71,28 @@ if __name__ == "__main__":
             statistics.append(["Min velocity", recv_double(sender_socket)])
             statistics.append(["Mean velocity", recv_double(sender_socket)])
             statistics.append(["Hits on the walls", recv_double(sender_socket)])
+
+            pr_left = recv_double(sender_socket)
+            pr_left /= (xlen * 0.1) # xlen ~ S; 0.1 ~ dt
+            statistics.append(["Left wall pressure", pr_left])
+
+            pr_right = recv_double(sender_socket)
+            pr_right /= (xlen * 0.1) # xlen ~ S; 0.1 ~ dt
+            statistics.append(["Right wall pressure", pr_right])
+
+            pr_top = recv_double(sender_socket)
+            pr_top /= (ylen * 0.1) # ylen ~ S; 0.1 ~ dt
+            statistics.append(["Top wall pressure", pr_top])
+
+            pr_bottom = recv_double(sender_socket)
+            pr_bottom /= (ylen * 0.1) # ylen ~ S; 0.1 ~ dt
+            statistics.append(["Bottom wall pressure", pr_bottom])
+
+            pr_mean = (pr_left + pr_right + pr_bottom + pr_top) / 4.0
+
+            statistics.append(["Pressure", pr_mean])
         else:
-            for i in range(4):
+            for i in range(8):
                 recv_double(sender_socket)
 
 

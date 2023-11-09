@@ -32,6 +32,7 @@ if __name__ == '__main__':
             print("Starting sending data to client")
             while True:
                 particles, statistics = cycle_iteration()
+                
 
                 for p in particles:
                     send_double(clientsocket, p.coords[0])

@@ -34,8 +34,15 @@ def main_cycle_init(xmin: float, ymin: float, xmax: float, ymax: float, N:int):
     main_system = System(particles, xmin, xmax, ymin, ymax, lattice_dimension)
     print("cycle ready to work")
 
+index = 0
 def cycle_iteration():
-
     main_system.RecalculateSystem()
-    return [main_system.GetParticles(), main_system.GetStatistics()]
+    ret = [main_system.GetParticles(), main_system.GetStatistics()]
+
+    index += 1
+    if index == 100:
+        index = 0
+        main_system.ClearStatistics()
+
+    return ret
 

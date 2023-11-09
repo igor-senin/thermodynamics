@@ -22,7 +22,12 @@ class System:
         self.max_velocity = 0.0
         self.min_velocity = float_info.max
         self.mean_velocity = 0.0
-        self.hits_on_the_walls = 0.0
+        self.hits_on_the_walls = 0
+
+        self.left_wall_pressure   = 0.0
+        self.right_wall_pressure  = 0.0
+        self.top_wall_pressure    = 0.0
+        self.bottom_wall_pressure = 0.0
 
     def SetBallCollisionValues(self, current_collision, true_collision):
         self.current_collision = current_collision
@@ -41,12 +46,12 @@ class System:
         
         for i in range(size):
             velocity_norm = np.linalg.norm(self.particles[i].velocity)
-            self.max_velocity = np.max([self.max_velocity, velocity_norm])
-            self.min_velocity = np.min([self.min_velocity, velocity_norm])
+            self.max_velocity = max(self.max_velocity, velocity_norm)
+            self.min_velocity = min(self.min_velocity, velocity_norm)
             self.mean_velocity += velocity_norm
 
-            has_collision = self.particles[i].EdgesCollisions(self.xmin, self.xmax, self.ymin, self.ymax)
-            self.hits_on_the_walls += 1.0 if has_collision else 0.0
+            has_collision = self.particles[i].EdgesCollisions(self)
+            self.hits_on_the_walls += 1 if has_collision else 0
 
             self.lattice.RecalculateParticle(i)
 
@@ -99,5 +104,19 @@ class System:
         return [self.max_velocity, 
                 self.min_velocity, 
                 self.mean_velocity,
-                self.hits_on_the_walls]
+                self.hits_on_the_walls,
+                self.left_wall_pressure,
+                self.right_wall_pressure,
+                self.top_wall_pressure,
+                self.bottom_wall_pressure]
+
+    def ClearStatistics(self):
+        self.max_velocity = 0.0
+        self.min_velocity = 0.0
+        self.mean_velocity = 0.0
+        self.hits_on_the_walls = 0
+        self.left_wall_pressure = 0.0
+        self.right_wall_pressure = 0.0
+        self.top_wall_pressure = 0.0
+        self.bottom_wall_pressure = 0.0
 

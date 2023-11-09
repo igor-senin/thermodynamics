@@ -1,5 +1,6 @@
 import numpy as np
 
+
 class Particle:
     def __init__(self, x, y, vx, vy, mass, radius):
         self.coords = np.array([x, y])
@@ -7,6 +8,8 @@ class Particle:
         self.mass = mass
         self.radius = radius
         self.past_collision = None
+
+        self.dt = 0.1
 
         # TODO: длина свободного пробега
 
@@ -16,15 +19,36 @@ class Particle:
     def CheckCollision(self, p):
         return self.Dist(p) <= self.radius + p.radius
 
-    def EdgesCollisions(self, xmin: float, xmax: float, ymin: float, ymax: float):
+    def EdgesCollisions(self, system):
+        # system of type system.System
+        xmin = system.xmin
+        xmax = system.xmax
+        ymin = system.ymin
+        ymax = system.ymax
 
         has_collision = False
 
-        if self.coords[0] <= self.radius + xmin or self.coords[0] + self.radius >= xmax:
+        if self.coords[0] <= self.radius + xmin:
+            print("left pressure", system.left_wall_pressure)
+            system.left_wall_pressure += self.mass * (self.velocity[0])**2
             self.velocity[0] *= -1.0
             has_collision = True
 
-        if self.coords[1] <= self.radius + ymin or self.coords[1] + self.radius >= ymax:
+        if self.coords[0] + self.radius >= xmax:
+            print("right pressure", system.right_wall_pressure)
+            system.right_wall_pressure += self.mass * (self.velocity[0])**2
+            self.velocity[0] *= -1.0
+            has_collision = True
+
+        if self.coords[1] <= self.radius + ymin:
+            print("top pressure", system.top_wall_pressure)
+            system.top_wall_pressure += self.mass * (self.velocity[1])**2
+            self.velocity[1] *= -1.0
+            has_collision = True
+
+        if self.coords[1] + self.radius >= ymax:
+            print("bottom pressure", system.bottom_wall_pressure)
+            system.bottom_wall_pressure += self.mass * (self.velocity[1])**2
             self.velocity[1] *= -1.0
             has_collision = True
 
@@ -51,7 +75,7 @@ class Particle:
         return (np.dot(self.velocity, x) / np.dot(x, x)) * x
 
     def UpdatePosition(self):
-        self.coords += self.velocity * 0.1
+        self.coords += self.velocity * self.dt
 
 
 def dist(p1: Particle, p2: Particle):
