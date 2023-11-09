@@ -18,12 +18,6 @@ class System:
         self.ymin = ymin
         self.ymax = ymax
 
-        # lattice example for dimension 2
-        # -----
-        # | | |
-        # |-|-|
-        # | | |
-        # -----
         self.lattice = Lattice(xmin, xmax, ymin, ymax, lattice_dimension, self.particles)
         self.max_velocity = 0.0
         self.min_velocity = float_info.max
@@ -100,7 +94,7 @@ class System:
         return self.particles
 
     def GetStatistics(self):
-        print(self.max_velocity, self.min_velocity, self.mean_velocity, self.hits_on_the_walls)
+        #print(self.max_velocity, self.min_velocity, self.mean_velocity, self.hits_on_the_walls)
 
         return [self.max_velocity, 
                 self.min_velocity, 

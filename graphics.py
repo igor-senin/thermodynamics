@@ -5,6 +5,10 @@ import graphics
 import numpy as np
 import pygame
 
+import pylab
+import matplotlib
+import matplotlib.backends.backend_agg as agg
+
 
 # colors
 White = (255, 255, 255)
@@ -14,6 +18,7 @@ Red   = (255, 0, 0)
 Green = (0, 200, 0)
 Yellow= (255, 255, 0)
 Grey  = (192, 192, 192)
+
 
 
 def init():
@@ -28,6 +33,7 @@ def init():
 
     pygame.display.set_caption("Thermodynamics")
 
+    matplotlib.use("Agg")
 
 def get_box_bounds():
     ymin = 0.0
@@ -91,4 +97,40 @@ class DrawableParticle():
                           (float(self.x) / scale_coeff,
                            float(self.y) / scale_coeff),
                            self.visible_radius)
+
+class Plot:
+    def __init__(self):
+        self.data = [np.array([1, 2, 3]), np.array([4, 5, 6])]
+        self.position = (0, 0)
+
+        self.fig = pylab.figure(figsize=[4, 4], dpi=100)
+        self.ax = self.fig.gca()
+        self.canvas = agg.FigureCanvasAgg(self.fig)
+        self.canvas.draw()
+        self.size = self.canvas.get_width_height()
+        self.renderer = self.canvas.get_renderer()
+        raw_data = self.renderer.tostring_rgb()
+        size = self.canvas.get_width_height()
+
+        surf = pygame.image.fromstring(raw_data, self.size, "RGB")
+        Window.blit(surf, self.position)
+
+    def Draw(self):
+        raw_data = self.renderer.tostring_rgb()
+        self.canvas.draw()
+
+        surf = pygame.image.fromstring(raw_data, self.size, "RGB")
+        Window.blit(surf, self.position)
+
+    def Update(self):
+
+        pass
+
+class Dashboard:
+    def __init__(self):
+        self.plots = [None for i in range(6)]
+        self.plots_coords = None
+
+    def Draw(self):
+        pass
 

@@ -9,7 +9,7 @@ from sockets_interacts import recv_int, recv_double, send_double
 def send_bounds(socket):
     bounds = get_box_bounds()
     for i in range(4):
-        print(bounds[i])
+        #print(bounds[i])
         data = bounds[i]
         send_double(socket, data)
 
@@ -62,6 +62,7 @@ if __name__ == "__main__":
 
         reduse_draw_statistics += 1 
         if reduse_draw_statistics % 20 == 0:
+            reduse_draw_statistics = 0
             statistics.clear()
             statistics.append(["Max velocity", recv_double(sender_socket)])
             statistics.append(["Min velocity", recv_double(sender_socket)])
